@@ -1,73 +1,21 @@
-const params =
-new URLSearchParams(
-    location.search
+const SUPABASE_URL = "https://etzdhnpynhgagiwwbqur.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV0emRobnB5bmhnYWdpd3dicXVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxNTY5NTEsImV4cCI6MjA5NTczMjk1MX0.iaNTV2bv6xWhJ6NlRswklZ04JxjxJlXpndfporV9zCg";
+
+const supabase = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
 );
 
-const query =
-params.get("q");
+async function testConnection() {
 
-document
-.getElementById("searchInput")
-.value = query || "";
-
-search(query);
-
-async function search(text){
-
-    if(!text) return;
-
-    const {
-        data,
-        error
-    } = await supabase
+    const { data, error } =
+    await supabase
     .from("pages")
-    .select("*")
-    .or(
-        `title.ilike.%${text}%,
-         description.ilike.%${text}%,
-         content.ilike.%${text}%`
-    );
+    .select("*");
 
-    const results =
-    document.getElementById(
-        "results"
-    );
-
-    if(error){
-
-        results.innerHTML =
-        "Error al buscar";
-
-        return;
-    }
-
-    results.innerHTML = "";
-
-    data.forEach(page=>{
-
-        results.innerHTML += `
-        <div class="result">
-
-            <a
-                class="title"
-                href="${page.url}"
-                target="_blank">
-
-                ${page.title}
-
-            </a>
-
-            <div class="url">
-                ${page.url}
-            </div>
-
-            <p>
-                ${page.description}
-            </p>
-
-        </div>
-        `;
-
-    });
+    console.log("DATA:", data);
+    console.log("ERROR:", error);
 
 }
+
+testConnection();
