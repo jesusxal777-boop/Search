@@ -40,43 +40,41 @@ button.addEventListener(
     ()=>search()
 );
 
-async function search(customQuery){
-
-    const text =
-    customQuery ||
-    input.value.trim();
-
-    if(!text){
-
-        results.innerHTML =
-        "Escribe algo para buscar.";
-
+async function search(customQuery) {
+    const text = customQuery || input.value.trim();
+    if (!text) {
+        results.innerHTML = "Escribe algo para buscar.";
         return;
-
     }
 
-    results.innerHTML =
-    "Buscando...";
+    results.innerHTML = "Buscando...";
 
-    const {
-        data,
-        error
-    } = await supabase
-    .from("pages")
-    .select("*");
+    // Filtramos directamente en la consulta a la base de datos
+    const { data, error } = await supabase
+        .from("pages")
+        .select("*")
+        .or(`title.ilike.%${text}%,description.ilike.%${text}%,content.ilike.%${text}%`);
 
-    console.log(data);
-    console.log(error);
-
-    if(error){
-
-        results.innerHTML =
-        error.message;
-
+    if (error) {
+        results.innerHTML = "Error: " + error.message;
         return;
-
     }
 
+    if (!data || data.length === 0) {
+        results.innerHTML = "No se encontraron resultados.";
+        return;
+    }
+
+    results.innerHTML = "";
+    data.forEach(page => {
+        results.innerHTML += `
+        <div class="result">
+            <a href="${page.url}" target="_blank">${page.title || 'Sin título'}</a>
+            <div class="url">${page.url}</div>
+            <p>${page.description || ''}</p>
+        </div>`;
+    });
+}
     const filtered =
     data.filter(page => {
 
