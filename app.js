@@ -6,19 +6,19 @@ document.getElementById("searchBtn");
 
 button.addEventListener(
     "click",
-    goSearch
+    search
 );
 
 input.addEventListener(
     "keypress",
-    e => {
-        if(e.key === "Enter"){
-            goSearch();
+    e=>{
+        if(e.key==="Enter"){
+            search();
         }
     }
 );
 
-function goSearch(){
+function search(){
 
     const query =
     input.value.trim();
@@ -29,4 +29,4 @@ function goSearch(){
     "search.html?q=" +
     encodeURIComponent(query);
 
-}
+}.
