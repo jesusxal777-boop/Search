@@ -1,42 +1,94 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>DreamByte Search</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="style.css">
+<title>DreamByte Search</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+body{
+    font-family:Arial,sans-serif;
+    background:#0b1020;
+    color:white;
+    margin:0;
+}
+
+header{
+    padding:20px;
+}
+
+.search-box{
+    display:flex;
+    gap:10px;
+}
+
+input{
+    flex:1;
+    padding:12px;
+    border:none;
+    border-radius:25px;
+}
+
+button{
+    padding:12px 20px;
+    border:none;
+    border-radius:25px;
+    cursor:pointer;
+}
+
+#results{
+    padding:20px;
+}
+
+.result{
+    margin-bottom:25px;
+}
+
+.result a{
+    color:#6ab4ff;
+    text-decoration:none;
+    font-size:22px;
+}
+
+.url{
+    color:#7ad97a;
+    font-size:14px;
+}
+
+</style>
+
 </head>
 <body>
 
 <header>
 
-    <a href="index.html" class="logo">
-        DreamByte Search
-    </a>
+<h2>DreamByte Search</h2>
 
-    <div class="search-box">
+<div class="search-box">
 
-        <input
-            id="searchInput"
-            type="text"
-            placeholder="Buscar..."
-        >
+<input
+    id="searchInput"
+    placeholder="Buscar..."
+>
 
-        <button id="searchBtn">
-            Buscar
-        </button>
+<button id="searchBtn">
+    Buscar
+</button>
 
-    </div>
+</div>
 
 </header>
 
-<main id="results">
+<div id="results">
 
-</main>
+Cargando...
+
+</div>
 
 <script src="search.js"></script>
 
