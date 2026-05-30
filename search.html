@@ -1,3 +1,15 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>DreamByte Search</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
 <body>
 
 <header>
@@ -5,11 +17,13 @@
     <a href="index.html" class="logo">
         DreamByte Search
     </a>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <div class="search-box">
 
         <input
             id="searchInput"
+            type="text"
+            placeholder="Buscar..."
         >
 
         <button id="searchBtn">
@@ -27,3 +41,4 @@
 <script src="search.js"></script>
 
 </body>
+</html>
