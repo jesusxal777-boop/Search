@@ -1,73 +1,29 @@
-const params =
-new URLSearchParams(
-    location.search
-);
+<body>
 
-const query =
-params.get("q");
+<header>
 
-document
-.getElementById("searchInput")
-.value = query || "";
+    <a href="index.html" class="logo">
+        DreamByte Search
+    </a>
 
-search(query);
+    <div class="search-box">
 
-async function search(text){
+        <input
+            id="searchInput"
+        >
 
-    if(!text) return;
+        <button id="searchBtn">
+            Buscar
+        </button>
 
-    const {
-        data,
-        error
-    } = await supabase
-    .from("pages")
-    .select("*")
-    .or(
-        `title.ilike.%${text}%,
-         description.ilike.%${text}%,
-         content.ilike.%${text}%`
-    );
+    </div>
 
-    const results =
-    document.getElementById(
-        "results"
-    );
+</header>
 
-    if(error){
+<main id="results">
 
-        results.innerHTML =
-        "Error al buscar";
+</main>
 
-        return;
-    }
+<script src="search.js"></script>
 
-    results.innerHTML = "";
-
-    data.forEach(page=>{
-
-        results.innerHTML += `
-        <div class="result">
-
-            <a
-                class="title"
-                href="${page.url}"
-                target="_blank">
-
-                ${page.title}
-
-            </a>
-
-            <div class="url">
-                ${page.url}
-            </div>
-
-            <p>
-                ${page.description}
-            </p>
-
-        </div>
-        `;
-
-    });
-
-}
+</body>
