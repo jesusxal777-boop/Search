@@ -17,7 +17,8 @@ const button =
 document.getElementById("searchBtn");
 
 const results =
-document.getElementById("results");
+document.getElementById("results").innerHTML =
+"<h2>DreamByte Search conectado</h2>";
 
 const params =
 new URLSearchParams(
