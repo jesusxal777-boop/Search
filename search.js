@@ -1,8 +1,10 @@
+console.log("search.js cargado");
+
 const SUPABASE_URL =
 "https://etzdhnpynhgagiwwbqur.supabase.co";
 
 const SUPABASE_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV0emRobnB5bmhnYWdpd3dicXVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxNTY5NTEsImV4cCI6MjA5NTczMjk1MX0.iaNTV2bv6xWhJ6NlRswklZ04JxjxJlXpndfporV9zCg";
+"TU_ANON_KEY";
 
 const supabase =
 window.supabase.createClient(
@@ -17,8 +19,10 @@ const button =
 document.getElementById("searchBtn");
 
 const results =
-document.getElementById("results").innerHTML =
-"<h2>DreamByte Search conectado</h2>";
+document.getElementById("results");
+
+results.innerHTML =
+"<p>DreamByte Search iniciado...</p>";
 
 const params =
 new URLSearchParams(
@@ -41,81 +45,108 @@ button.addEventListener(
     () => search()
 );
 
+input.addEventListener(
+    "keypress",
+    e => {
+
+        if(e.key === "Enter"){
+
+            search();
+
+        }
+
+    }
+);
+
 async function search(customQuery){
 
     const text =
     customQuery ||
     input.value.trim();
 
-    if(!text) return;
+    if(!text){
+
+        results.innerHTML =
+        "<p>Escribe algo para buscar.</p>";
+
+        return;
+
+    }
 
     results.innerHTML =
     "<p>Buscando...</p>";
 
-    const {
-        data,
-        error
-    } = await supabase
-    .from("pages")
-    .select("*")
-    .or(
-        `title.ilike.%${text}%,
-        description.ilike.%${text}%,
-        content.ilike.%${text}%`
-    );
+    try{
 
-    console.log(data);
-    console.log(error);
+        const {
+            data,
+            error
+        } = await supabase
+        .from("pages")
+        .select("*")
+        .or(
+            `title.ilike.%${text}%,
+            description.ilike.%${text}%,
+            content.ilike.%${text}%`
+        );
 
-    if(error){
+        console.log("DATA:", data);
+        console.log("ERROR:", error);
 
-        results.innerHTML =
-        `<p>${error.message}</p>`;
+        if(error){
 
-        return;
+            results.innerHTML =
+            `<pre>${JSON.stringify(error,null,2)}</pre>`;
 
-    }
+            return;
 
-    if(!data || data.length === 0){
+        }
 
-        results.innerHTML =
-        "<p>No se encontraron resultados.</p>";
+        if(!data || data.length === 0){
 
-        return;
+            results.innerHTML =
+            "<p>No se encontraron resultados.</p>";
 
-    }
+            return;
 
-    results.innerHTML = "";
+        }
 
-    data.forEach(page => {
+        results.innerHTML = "";
 
-        results.innerHTML += `
-        <div class="result">
+        data.forEach(page => {
 
-            <h3>
-                <a href="${page.url}"
-                   target="_blank">
+            results.innerHTML += `
+            <div class="result">
 
-                   ${page.title}
+                <h3>
+                    <a
+                        href="${page.url}"
+                        target="_blank"
+                    >
+                        ${page.title || "Sin título"}
+                    </a>
+                </h3>
 
-                </a>
-            </h3>
+                <div class="url">
+                    ${page.url || ""}
+                </div>
 
-            <div class="url">
-
-                ${page.url}
+                <p>
+                    ${page.description || ""}
+                </p>
 
             </div>
+            `;
 
-            <p>
+        });
 
-                ${page.description}
+    }catch(err){
 
-            </p>
+        console.error(err);
 
-        </div>
-        `;
+        results.innerHTML =
+        `<pre>${err}</pre>`;
 
-    });
+    }
 
 }
