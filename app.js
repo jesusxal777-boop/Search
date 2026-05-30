@@ -2,7 +2,7 @@ const SUPABASE_URL =
 "https://etzdhnpynhgagiwwbqur.supabase.co";
 
 const SUPABASE_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV0emRobnB5bmhnYWdpd3dicXVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxNTY5NTEsImV4cCI6MjA5NTczMjk1MX0.iaNTV2bv6xWhJ6NlRswklZ04JxjxJlXpndfporV9zCg";
+"TU_ANON_KEY";
 
 const supabase =
 window.supabase.createClient(
@@ -19,29 +19,49 @@ document.getElementById("searchBtn");
 const results =
 document.getElementById("results");
 
+const params =
+new URLSearchParams(
+    window.location.search
+);
+
+const query =
+params.get("q");
+
+if (query) {
+    input.value = query;
+    search(query);
+}
+
 button.addEventListener(
     "click",
-    search
+    () => search()
 );
 
 input.addEventListener(
     "keypress",
     e => {
-        if(e.key === "Enter"){
+        if (e.key === "Enter") {
             search();
         }
     }
 );
 
-async function search(){
+async function search(customQuery = null) {
 
-    const query =
+    const text =
+    customQuery ||
     input.value.trim();
 
-    if(!query) return;
+    if (!text) {
+        results.innerHTML =
+        "<p>Escribe algo para buscar.</p>";
+        return;
+    }
 
     results.innerHTML =
     "<p>Buscando...</p>";
+
+    console.log("Buscando:", text);
 
     const {
         data,
@@ -49,25 +69,35 @@ async function search(){
     } = await supabase
     .from("pages")
     .select("*")
-    .ilike(
-        "content",
-        `%${query}%`
+    .or(
+        `title.ilike.%${text}%,
+         description.ilike.%${text}%,
+         content.ilike.%${text}%`
     );
 
-    if(error){
+    console.log("DATA:", data);
+    console.log("ERROR:", error);
 
-        results.innerHTML =
-        "<p>Error al buscar.</p>";
+    if (error) {
 
-        console.error(error);
+        results.innerHTML = `
+            <div class="result">
+                <h3>Error</h3>
+                <pre>${JSON.stringify(error, null, 2)}</pre>
+            </div>
+        `;
 
         return;
     }
 
-    if(data.length === 0){
+    if (!data || data.length === 0) {
 
-        results.innerHTML =
-        "<p>No se encontraron resultados.</p>";
+        results.innerHTML = `
+            <div class="result">
+                <h3>Sin resultados</h3>
+                <p>No se encontraron coincidencias para "${text}".</p>
+            </div>
+        `;
 
         return;
     }
@@ -80,14 +110,20 @@ async function search(){
         <div class="result">
 
             <h3>
-                <a href="${page.url}"
-                   target="_blank">
-                   ${page.title}
+                <a
+                    href="${page.url}"
+                    target="_blank"
+                >
+                    ${page.title || "Sin título"}
                 </a>
             </h3>
 
+            <div class="url">
+                ${page.url || ""}
+            </div>
+
             <p>
-                ${page.description}
+                ${page.description || ""}
             </p>
 
         </div>
