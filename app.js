@@ -29,4 +29,4 @@ function search(){
     "search.html?q=" +
     encodeURIComponent(query);
 
-}.
+}
